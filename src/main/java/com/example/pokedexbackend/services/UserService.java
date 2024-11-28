@@ -36,5 +36,13 @@ public class UserService {
         }
         return optionalUser.get();
     }
+
+    public User getUserByUserName(String userName) {
+        Optional<User> optionalUser = userRepository.findByUserName(userName);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalStateException("User not found.");
+        }
+        return optionalUser.get();  // Zwracamy użytkownika z drużynami (wraz z @DocumentReference)
+    }
 }
 

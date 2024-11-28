@@ -41,4 +41,16 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getUser(@PathVariable String userName) {
+        try {
+            // Pobranie użytkownika wraz z drużynami
+            User user = userService.getUserByUserName(userName);
+            System.out.println(user);
+            return ResponseEntity.ok(user);  // Zwracamy pełne dane użytkownika z drużynami
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
