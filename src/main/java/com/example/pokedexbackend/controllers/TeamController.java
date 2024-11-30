@@ -30,6 +30,29 @@ public class TeamController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create team: " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/name/{teamName}")
+    public ResponseEntity<String> deleteTeamByName(@PathVariable String teamName) {
+        try {
+            teamService.deleteTeamByName(teamName);
+            return ResponseEntity.status(HttpStatus.OK).body("Team deleted successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete team: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/name/{oldTeamName}")
+    public ResponseEntity<String> updateTeamByName(@PathVariable String oldTeamName, @RequestBody Team updatedTeam) {
+        try {
+            teamService.updateTeamByName(oldTeamName, updatedTeam);
+            return ResponseEntity.status(HttpStatus.OK).body("Team updated successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to update team: " + e.getMessage());
+        }
+    }
+
 }
 
 

@@ -45,6 +45,45 @@ public class TeamService {
         // Zaktualizuj użytkownika
         userRepository.save(user);
     }
+
+    public void deleteTeamByName(String teamName) {
+        // Sprawdź, czy drużyna istnieje na podstawie nazwy
+        Team team = teamRepository.findByTeamName(teamName)
+                .orElseThrow(() -> new IllegalArgumentException("Team with name " + teamName + " not found"));
+
+        // Usuń drużynę z bazy danych
+        teamRepository.delete(team);
+
+        // Usuń referencję do drużyny z użytkownika
+        User user = userRepository.findByTeamIdsContaining(team)
+                .orElseThrow(() -> new IllegalArgumentException("Associated user not found"));
+
+        List<Team> updatedTeams = user.getTeamIds();
+        updatedTeams.remove(team);
+        user.setTeamIds(updatedTeams);
+        userRepository.save(user);
+    }
+
+    public void updateTeamByName(String oldTeamName, Team updatedTeam) {
+        // Znajdź istniejącą drużynę po starej nazwie
+        Team existingTeam = teamRepository.findByTeamName(oldTeamName)
+                .orElseThrow(() -> new IllegalArgumentException("Team with name " + oldTeamName + " not found"));
+
+        // Aktualizuj dane drużyny
+        existingTeam.setTeamName(updatedTeam.getTeamName());
+        existingTeam.setPokemonNames(updatedTeam.getPokemonNames());
+        existingTeam.setPokemonSprites(updatedTeam.getPokemonSprites());
+        teamRepository.save(existingTeam);
+
+        // Zaktualizuj referencję w użytkowniku
+        User user = userRepository.findByTeamIdsContaining(existingTeam)
+                .orElseThrow(() -> new IllegalArgumentException("Associated user not found"));
+        List<Team> userTeams = user.getTeamIds();
+        userTeams.removeIf(team -> team.getId().equals(existingTeam.getId()));
+        userTeams.add(existingTeam);
+        user.setTeamIds(userTeams);
+        userRepository.save(user);
+    }
 }
 
 
