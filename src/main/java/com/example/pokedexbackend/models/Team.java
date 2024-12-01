@@ -21,10 +21,4 @@ public class Team {
     private List<String> pokemonNames;
     private List<String> pokemonSprites;
 
-    public Team(String teamName, List<String> pokemonNames, List<String> pokemonSprites) {
-        this.teamName = teamName;
-        this.pokemonNames = pokemonNames;
-        this.pokemonSprites = pokemonSprites;
-    }
-
 }

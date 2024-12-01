@@ -6,6 +6,7 @@ import com.example.pokedexbackend.repositories.TeamRepository;
 import com.example.pokedexbackend.models.Team;
 import com.example.pokedexbackend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -46,10 +47,10 @@ public class TeamService {
         userRepository.save(user);
     }
 
-    public void deleteTeamByName(String teamName) {
-        // Sprawdź, czy drużyna istnieje na podstawie nazwy
-        Team team = teamRepository.findByTeamName(teamName)
-                .orElseThrow(() -> new IllegalArgumentException("Team with name " + teamName + " not found"));
+    public void deleteTeamById(String id) {
+        // Znajdź drużynę po id
+        Team team = teamRepository.findById(new ObjectId(id))
+                .orElseThrow(() -> new IllegalArgumentException("Team with id " + id + " not found"));
 
         // Usuń drużynę z bazy danych
         teamRepository.delete(team);
@@ -64,10 +65,11 @@ public class TeamService {
         userRepository.save(user);
     }
 
-    public void updateTeamByName(String oldTeamName, Team updatedTeam) {
-        // Znajdź istniejącą drużynę po starej nazwie
-        Team existingTeam = teamRepository.findByTeamName(oldTeamName)
-                .orElseThrow(() -> new IllegalArgumentException("Team with name " + oldTeamName + " not found"));
+
+    public void updateTeamById(String id, Team updatedTeam) {
+        // Znajdź istniejącą drużynę po id
+        Team existingTeam = teamRepository.findById(new ObjectId(id))
+                .orElseThrow(() -> new IllegalArgumentException("Team with id " + id + " not found"));
 
         // Aktualizuj dane drużyny
         existingTeam.setTeamName(updatedTeam.getTeamName());
@@ -75,15 +77,17 @@ public class TeamService {
         existingTeam.setPokemonSprites(updatedTeam.getPokemonSprites());
         teamRepository.save(existingTeam);
 
-        // Zaktualizuj referencję w użytkowniku
+        // Zaktualizuj referencję w użytkowniku (jeśli konieczne)
         User user = userRepository.findByTeamIdsContaining(existingTeam)
                 .orElseThrow(() -> new IllegalArgumentException("Associated user not found"));
+
         List<Team> userTeams = user.getTeamIds();
         userTeams.removeIf(team -> team.getId().equals(existingTeam.getId()));
         userTeams.add(existingTeam);
         user.setTeamIds(userTeams);
         userRepository.save(user);
     }
+
 }
 
 

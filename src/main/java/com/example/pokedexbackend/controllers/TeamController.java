@@ -31,10 +31,10 @@ public class TeamController {
         }
     }
 
-    @DeleteMapping("/name/{teamName}")
-    public ResponseEntity<String> deleteTeamByName(@PathVariable String teamName) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTeamById(@PathVariable String id) {
         try {
-            teamService.deleteTeamByName(teamName);
+            teamService.deleteTeamById(id);
             return ResponseEntity.status(HttpStatus.OK).body("Team deleted successfully!");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found: " + e.getMessage());
@@ -43,15 +43,17 @@ public class TeamController {
         }
     }
 
-    @PutMapping("/name/{oldTeamName}")
-    public ResponseEntity<String> updateTeamByName(@PathVariable String oldTeamName, @RequestBody Team updatedTeam) {
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateTeamById(@PathVariable String id, @RequestBody Team updatedTeam) {
         try {
-            teamService.updateTeamByName(oldTeamName, updatedTeam);
+            teamService.updateTeamById(id, updatedTeam);
             return ResponseEntity.status(HttpStatus.OK).body("Team updated successfully!");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to update team: " + e.getMessage());
         }
     }
+
 
 }
 

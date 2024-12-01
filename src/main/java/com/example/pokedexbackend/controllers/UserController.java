@@ -3,6 +3,7 @@ package com.example.pokedexbackend.controllers;
 import com.example.pokedexbackend.dto.LoginRequest;
 import com.example.pokedexbackend.dto.LoginResponse;
 import com.example.pokedexbackend.dto.RegisterRequest;
+import com.example.pokedexbackend.dto.UserDTO;
 import com.example.pokedexbackend.models.User;
 import com.example.pokedexbackend.services.JwtService;
 import com.example.pokedexbackend.services.UserService;
@@ -45,9 +46,8 @@ public class UserController {
     @GetMapping("/{userName}")
     public ResponseEntity<?> getUser(@PathVariable String userName) {
         try {
-            // Pobranie użytkownika wraz z drużynami
-            User user = userService.getUserByUserName(userName);
-            return ResponseEntity.ok(user);  // Zwracamy pełne dane użytkownika z drużynami
+            UserDTO userDTO = userService.getUserByUserNameWithTeams(userName);
+            return ResponseEntity.ok(userDTO);  // Zwróć DTO z ID w formacie String
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

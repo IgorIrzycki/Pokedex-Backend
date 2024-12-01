@@ -1,5 +1,7 @@
 package com.example.pokedexbackend.services;
 
+import com.example.pokedexbackend.dto.TeamDTO;
+import com.example.pokedexbackend.dto.UserDTO;
 import com.example.pokedexbackend.models.User;
 import com.example.pokedexbackend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +46,26 @@ public class UserService {
             throw new IllegalStateException("User not found.");
         }
         return optionalUser.get();  // Zwracamy użytkownika z drużynami (wraz z @DocumentReference)
+    }
+
+    public UserDTO getUserByUserNameWithTeams(String userName) {
+        User user = getUserByUserName(userName); // Pobierz użytkownika z bazy danych
+
+        List<TeamDTO> teamDTOs = user.getTeamIds().stream().map(team ->
+                new TeamDTO(
+                        team.getId().toHexString(),  // Konwersja ObjectId na String
+                        team.getTeamName(),
+                        team.getPokemonNames(),
+                        team.getPokemonSprites()
+                )
+        ).toList();
+
+        return new UserDTO(
+                user.getId().toHexString(), // Konwersja ObjectId użytkownika na String
+                user.getUserName(),
+                user.getEmail(),
+                teamDTOs
+        );
     }
 }
 
