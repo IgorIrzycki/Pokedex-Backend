@@ -21,12 +21,14 @@ import java.util.Map;
 public class TeamController {
     private final TeamService teamService;
 
-    @PostMapping
+    @PostMapping("/createTeam")
     public ResponseEntity<String> createTeam(@RequestBody CreateTeamRequest request) {
+        System.out.println("create team try");
         try {
             teamService.createTeam(request);
             return ResponseEntity.status(HttpStatus.CREATED).body("Team created successfully!");
         } catch (Exception e) {
+            System.out.println("create team failed");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create team: " + e.getMessage());
         }
     }
@@ -46,6 +48,7 @@ public class TeamController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateTeamById(@PathVariable String id, @RequestBody Team updatedTeam) {
+        System.out.println("Try update");
         try {
             teamService.updateTeamById(id, updatedTeam);
             return ResponseEntity.status(HttpStatus.OK).body("Team updated successfully!");
