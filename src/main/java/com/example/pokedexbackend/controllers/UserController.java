@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable String userName) {
         try {
             UserDTO userDTO = userService.getUserByUserNameWithTeams(userName);
-            return ResponseEntity.ok(userDTO);  // Zwróć DTO z ID w formacie String
+            return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

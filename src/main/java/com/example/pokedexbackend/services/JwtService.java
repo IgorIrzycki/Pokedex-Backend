@@ -15,44 +15,29 @@ import java.util.Date;
 public class JwtService {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    // Generowanie tokenu
+
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUserName())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24h
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(key)
                 .compact();
     }
 
-    // Weryfikacja tokenu
+
     public String validateToken(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token) // Parsowanie tokenu i sprawdzanie podpisu
+                    .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException("Token has expired", e);  // Obsługuje wygasły token
+            throw new RuntimeException("Token has expired", e);
         } catch (JwtException e) {
-            throw new RuntimeException("Invalid token", e);  // Obsługuje nieprawidłowy token
-        }
-    }
-
-    // Sprawdzanie, czy token jest wygasły
-    public boolean isTokenExpired(String token) {
-        try {
-            Date expiration = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getExpiration();
-            return expiration.before(new Date());
-        } catch (JwtException e) {
-            return true;  // Jeśli nie udało się zweryfikować tokenu, traktujemy go jako wygasły
+            throw new RuntimeException("Invalid token", e);
         }
     }
 }

@@ -27,7 +27,7 @@ public class UserService {
         user.setUserName(userName);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        user.setTeamIds(new ArrayList<>()); // Pusta lista drużyn
+        user.setTeamIds(new ArrayList<>());
 
         return userRepository.save(user);
     }
@@ -45,15 +45,15 @@ public class UserService {
         if (optionalUser.isEmpty()) {
             throw new IllegalStateException("User not found.");
         }
-        return optionalUser.get();  // Zwracamy użytkownika z drużynami (wraz z @DocumentReference)
+        return optionalUser.get();
     }
 
     public UserDTO getUserByUserNameWithTeams(String userName) {
-        User user = getUserByUserName(userName); // Pobierz użytkownika z bazy danych
+        User user = getUserByUserName(userName);
 
         List<TeamDTO> teamDTOs = user.getTeamIds().stream().map(team ->
                 new TeamDTO(
-                        team.getId().toHexString(),  // Konwersja ObjectId na String
+                        team.getId().toHexString(),
                         team.getTeamName(),
                         team.getPokemonNames(),
                         team.getPokemonSprites()
@@ -61,7 +61,7 @@ public class UserService {
         ).toList();
 
         return new UserDTO(
-                user.getId().toHexString(), // Konwersja ObjectId użytkownika na String
+                user.getId().toHexString(),
                 user.getUserName(),
                 user.getEmail(),
                 teamDTOs

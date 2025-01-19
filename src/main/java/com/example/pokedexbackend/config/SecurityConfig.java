@@ -31,10 +31,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/users/**").permitAll() // Endpointy dostępne bez autoryzacji
-                        .anyRequest().authenticated() // Wszystkie inne żądania wymagają autoryzacji
+                        .requestMatchers("/api/v1/users/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class); // Dodanie filtra JWT przed filtrem UsernamePasswordAuthenticationFilter
+                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
